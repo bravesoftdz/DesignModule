@@ -31,8 +31,6 @@ function buildModuleControlItemModelData(moduleModel) {
     };
 }
 
-var visibleStatuses = [ModuleStatus.READY, ModuleStatus.CALCULATING];
-
 var ModuleControlViewController = L.Evented.extend({
 
     initialize: function (opts) {
@@ -108,19 +106,37 @@ var ModuleControlViewController = L.Evented.extend({
     },
 
     _updateModuleControlViewModel: function () {
-        var moduleControlItemsModel = this._moduleControlViewModel;
+        function filterReadyModels(moduleModel) {
+            if (!moduleModel) return false;
+            if (moduleModel.status !== ModuleStatus.READY) return false;
+            return true;
+        }
+
+        function filterCalculatingModels(moduleModel) {
+            if (!moduleModel) return false;
+            if (moduleModel.status !== ModuleStatus.CALCULATING) return false;
+            return true;
+        }
+
+        this._updateModulesCollection(
+            this._moduleControlViewModel.readyModules, 
+            filterReadyModels
+        );
+        this._updateModulesCollection(
+            this._moduleControlViewModel.calculatingModules,
+            filterCalculatingModels
+        );
+    },
+
+    _updateModulesCollection: function (readyModulesCollection, filter) {
         var newModuleItemModels = [];
         var moduleModels = this._modules.models;
 
         moduleModels
-            .filter(function (moduleModel) {
-                if (!moduleModel) return false;
-                if (visibleStatuses.indexOf(moduleModel.status) < 0) return false;
-                return true;
-            })
+            .filter(filter)
             .forEach(function (moduleModel) {
                 var moduleItemData = buildModuleControlItemModelData(moduleModel);
-                var moduleItem = moduleControlItemsModel.getById(moduleModel.id);
+                var moduleItem = readyModulesCollection.getById(moduleModel.id);
                 
                 if (moduleItem) {
                     moduleItem.set(moduleItemData);                
@@ -131,7 +147,7 @@ var ModuleControlViewController = L.Evented.extend({
                 newModuleItemModels.push(moduleItem);
             });
 
-        this._moduleControlViewModel.set(newModuleItemModels);        
+        readyModulesCollection.set(newModuleItemModels);
     },
 
     _updateModuleControlItemModel: function (data) {
@@ -139,13 +155,16 @@ var ModuleControlViewController = L.Evented.extend({
         if (!moduleModel) return;
 
         var moduleControlItemData;
-        var moduleControlItem = this._moduleControlViewModel.getById(moduleModel.id);        
+        var moduleControlItem = 
+            this._moduleControlViewModel.readyModules.getById(moduleModel.id) || 
+            this._moduleControlViewModel.calculatingModules.getById(moduleModel.id);        
+        
         if (moduleControlItem) {
             moduleControlItemData = buildModuleControlItemModelData(moduleModel);
             moduleControlItem.set(moduleControlItemData);
         }
     }
-
+    
 }); 
 
 export default ModuleControlViewController;

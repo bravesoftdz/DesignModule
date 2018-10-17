@@ -1,11 +1,28 @@
 /**
  * ModuleControlViewModel. This model is used only to present data 
  * to ModuleControlView for visualization and not meant to be a domain model.
- * In this case the model is just a colection of ModuleControlItemModel models.
  */
 
 /* globals L */
 
 import ModelCollection from '../../core/modelCollection';
 
-export default ModelCollection;
+var ModuleControlViewModel = L.Evented.extend({
+
+    initialize: function (opts) {
+        var options = opts || {};
+
+        var readyModules = options.readyModules || new ModelCollection();
+        Object.defineProperty(this, 'readyModules', {
+            get: function () { return readyModules; }
+        });
+
+        var calculatingModules = options.calculatingModules || new ModelCollection();
+        Object.defineProperty(this, 'calculatingModules', {
+            get: function () { return calculatingModules; }
+        });
+    }
+
+});
+
+export default ModuleControlViewModel;

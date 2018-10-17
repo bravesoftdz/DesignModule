@@ -252,7 +252,6 @@ var wsLookup = {
     },
     modelcontrol: function (payload) {
         moduleService.processServerMessage(payload);
-        DataManager.modelControl.HandleMessages(payload);
     },
     context: function (payload) {
         ContextManager.contextMessage(payload);

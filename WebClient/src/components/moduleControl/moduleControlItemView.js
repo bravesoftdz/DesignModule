@@ -57,8 +57,16 @@ var ModuleControlItemView = View.extend({
         d3.select(this._rootElement).select('.module-status-icon')
             .classed('fa-circle-notch', this._moduleControlItemModel.loading)
             .classed('fa-spin', this._moduleControlItemModel.loading)
-            .classed('fa-check', !this._moduleControlItemModel.loading)
+            .classed('fa-check', !this._moduleControlItemModel.loading)            
             .classed('module-status-icon-ready', !this._moduleControlItemModel.loading);
+        
+        // workaround: IE11 and Edge do not redraw an element after class is removed
+        // therefore icon will remain spinning even after fa-spin class is removed.
+        // This can be fixed with changing the element thus forceing element redraweal.
+        if (!this._moduleControlItemModel.loading) {
+            d3.select(this._rootElement).select('.module-status-icon')
+                .style('trarsform', 'none');
+        }   
     },
 
     _setupTooltip: function () {

@@ -62,11 +62,16 @@ var ModuleService = L.Evented.extend({
     _addModule: function (module) {
         if (typeof module !== 'object') return;
         if (!module.id) return;
-        if (this._modules.getById(module.id)) return;
-
+        
+        var moduleModel = this._modules.getById(module.id);
+        
         try {
-            var moduleModel = new ModuleModel(module);
-            this._modules.add(moduleModel);
+            if (moduleModel) {
+                moduleModel.set(module);
+            } else {
+                moduleModel= new ModuleModel(module);
+                this._modules.add(moduleModel);
+            }
         } catch (error) {
             console.error('Failed to add new module model with id ' + module.id + '. ' + error);
         }

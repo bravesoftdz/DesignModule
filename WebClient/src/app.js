@@ -248,10 +248,6 @@ window.moduleControlComponent = new ModuleControlComponent({
 });
 window.moduleService = moduleControlComponent.service();
 
-DataManager.modelControl = L.control.ModelControl();
-map.addControl(DataManager.modelControl);
-map.removeControl(DataManager.modelControl);
-
 // current-reference-difference control
 window.crd = L.control.crd({ parent: currefdiff });
 map.addControl(crd);
