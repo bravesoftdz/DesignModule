@@ -172,14 +172,7 @@ var wsLookup = {
             }
         }
         if (typeof payload.modelControlEnabled !== "undefined") {
-            if (payload.modelControlEnabled) {
-                map.addControl(DataManager.modelControl);
-                InfoTextControl['leaflet-control-model'] = { description: 'View model control info', active: true, iconPosition: 'left' };
-            }
-            else {
-                map.removeControl(DataManager.modelControl);
-                InfoTextControl['leaflet-control-model'] = { active: false };
-            }
+            moduleService.enabled = !!payload.modelControlEnabled;
         }
         if (typeof payload.filesControlEnabled !== "undefined") {
             if (payload.filesControlEnabled) {
@@ -258,6 +251,7 @@ var wsLookup = {
         DataManager.queryDialogData = payload; // only storage is needed no further action required
     },
     modelcontrol: function (payload) {
+        moduleService.processServerMessage(payload);
         DataManager.modelControl.HandleMessages(payload);
     },
     context: function (payload) {

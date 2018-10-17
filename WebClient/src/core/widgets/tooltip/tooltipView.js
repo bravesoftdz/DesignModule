@@ -21,7 +21,8 @@ var TooltipView = View.extend({
         var options = opts || {};
 
         this._parent = document.body;
-
+        
+        this._delay = options.delay || 0;
         this._html = buildHtmlFunction(options.html || '');
 
         this.show = this._createShow();
@@ -49,8 +50,11 @@ var TooltipView = View.extend({
             d3.select(tooltip._rootElement)
                 .style('left', left + 'px')
                 .style('top', top + 'px');
-
-            L.DomUtil.addClass(tooltip._rootElement, 'visible');
+                
+            tooltip._timeoutId = window.setTimeout(function () {
+                L.DomUtil.addClass(tooltip._rootElement, 'visible');
+                tooltip._timeoutId = null;
+            }, tooltip._delay);            
 
             return tooltip;
         };
@@ -59,8 +63,12 @@ var TooltipView = View.extend({
     _createHide: function () {
         var tooltip = this;
         
-        return function () {
+        return function () {            
             L.DomUtil.removeClass(tooltip._rootElement, 'visible');
+
+            window.clearTimeout(tooltip._timeoutId);
+            tooltip._timeoutId = null;
+            
             return tooltip;
         };        
     }

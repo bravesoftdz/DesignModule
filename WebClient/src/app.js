@@ -12,6 +12,8 @@ import GraphPreviewFactory from './components/graph/graphPreviewFactory';
 import GraphService from './components/graph/graphService';
 import GraphViewManager from './components/graph/graphViewManager';
 import DetailsViewController from './components/details/detailsViewController';
+import ModuleService from './components/moduleControl/moduleService';
+import ModuleControlComponent from './components/moduleControl/moduleControlComponent';
 
 var wsp = 'https:' == document.location.protocol ? 'wss' : 'ws';
 // determine parameters and config
@@ -238,6 +240,13 @@ window.timeSliderController = new TimeSliderController({
 /*var timesliderControl = L.control.timeslider(timeslider);
 map.addControl(timesliderControl);*/
 
+// module control
+window.moduleControlComponent = new ModuleControlComponent({
+    map: map,
+    windowManager: windowManager,
+    toastFunction: AddErrorMessage
+});
+window.moduleService = moduleControlComponent.service();
 
 DataManager.modelControl = L.control.ModelControl();
 map.addControl(DataManager.modelControl);

@@ -53,6 +53,12 @@ var View = L.Evented.extend({
         L.DomUtil.addClass(this._rootElement, 'hidden');
     },
 
+    isVisible: function () {
+        return this._rootElement && 
+               this._rootElement.parentNode && 
+               !L.DomUtil.hasClass(this._rootElement, 'hidden');
+    },
+
     onInitialize: function (/* jshint unused:false */ opts) {
         // override in child classes
     },
