@@ -38,21 +38,24 @@ var TooltipView = View.extend({
         
         return function () {
             var element = this;
+            var tooltipElement = tooltip._rootElement;
+            if (!tooltipElement) return tooltip;
 
-            tooltip._rootElement.innerHTML = tooltip._html();            
+            tooltipElement.innerHTML = tooltip._html();
+            
 
             var elementRect = element.getBoundingClientRect();
-            var tooltipRect = tooltip._rootElement.getBoundingClientRect();
+            var tooltipRect = tooltipElement.getBoundingClientRect();
 
             var left = elementRect.left + (elementRect.width - tooltipRect.width) / 2;
             var top = elementRect.top - tooltipRect.height - 5;
 
-            d3.select(tooltip._rootElement)
+            d3.select(tooltipElement)
                 .style('left', left + 'px')
                 .style('top', top + 'px');
                 
             tooltip._timeoutId = window.setTimeout(function () {
-                L.DomUtil.addClass(tooltip._rootElement, 'visible');
+                L.DomUtil.addClass(tooltipElement, 'visible');
                 tooltip._timeoutId = null;
             }, tooltip._delay);            
 
