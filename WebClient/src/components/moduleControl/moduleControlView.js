@@ -36,29 +36,27 @@ var ModuleControlView = WindowView.extend({
         var moduleControlReadyList = d3.select(viewport).select('.module-control-ready-list').node();
         L.DomEvent.disableClickPropagation(moduleControlReadyList);
         L.DomEvent.disableScrollPropagation(moduleControlReadyList);
+        moduleControlReadyList.addEventListener('touchstart',  function (e) { e.stopPropagation(); });
 
-        var moduleControlCalculatingList = d3.select(viewport).select('.module-control-calculating-list').node();
-        L.DomEvent.disableClickPropagation(moduleControlCalculatingList);
-        L.DomEvent.disableScrollPropagation(moduleControlCalculatingList);
-
-        var moduleControlEmptyText = d3.select(viewport).select('.module-control-empty').node();
-        L.DomEvent.disableClickPropagation(moduleControlEmptyText);
-        L.DomEvent.disableScrollPropagation(moduleControlEmptyText);
+        var moduleControlBusyList = d3.select(viewport).select('.module-control-busy-list').node();
+        L.DomEvent.disableClickPropagation(moduleControlBusyList);
+        L.DomEvent.disableScrollPropagation(moduleControlBusyList);
+        moduleControlBusyList.addEventListener('touchstart',  function (e) { e.stopPropagation(); });
 
         this._readyModuleItems = {};
-        this._calculatingModuleItems = {};
+        this._busyModuleItems = {};
 
         this._addReadyModuleItems({ models: this._moduleControlViewModel.readyModules.models });
-        this._addCalculatingModuleItems({ models: this._moduleControlViewModel.calculatingModules.models });
+        this._addBusyModuleItems({ models: this._moduleControlViewModel.busyModules.models });
         this._updateModuleItemsListVisibility();
         
         this._moduleControlViewModel.readyModules.on('change', this._updateModuleItemsListVisibility, this);
         this._moduleControlViewModel.readyModules.on('add', this._addReadyModuleItems, this);
         this._moduleControlViewModel.readyModules.on('remove', this._removeReadyModuleItems, this);
 
-        this._moduleControlViewModel.calculatingModules.on('change', this._updateModuleItemsListVisibility, this);
-        this._moduleControlViewModel.calculatingModules.on('add', this._addCalculatingModuleItems, this);
-        this._moduleControlViewModel.calculatingModules.on('remove', this._removeCalculatingModuleItems, this);
+        this._moduleControlViewModel.busyModules.on('change', this._updateModuleItemsListVisibility, this);
+        this._moduleControlViewModel.busyModules.on('add', this._addBusyModuleItems, this);
+        this._moduleControlViewModel.busyModules.on('remove', this._removeBusyModuleItems, this);
     },
 
     onRemoveWindow: function () {
@@ -66,12 +64,12 @@ var ModuleControlView = WindowView.extend({
         this._moduleControlViewModel.readyModules.off('add', this._addReadyModuleItems, this);
         this._moduleControlViewModel.readyModules.off('remove', this._removeReadyModuleItems, this);
 
-        this._moduleControlViewModel.calculatingModules.off('change', this._updateModuleItemsListVisibility, this);
-        this._moduleControlViewModel.calculatingModules.off('add', this._addCalculatingModuleItems, this);
-        this._moduleControlViewModel.calculatingModules.off('remove', this._removeCalculatingModuleItems, this);
+        this._moduleControlViewModel.busyModules.off('change', this._updateModuleItemsListVisibility, this);
+        this._moduleControlViewModel.busyModules.off('add', this._addBusyModuleItems, this);
+        this._moduleControlViewModel.busyModules.off('remove', this._removeBusyModuleItems, this);
 
         this._removeReadyModuleItems({ models: this._moduleControlViewModel.readyModules.models });
-        this._removeCalculatingModuleItems({ models: this._moduleControlViewModel.calculatingModules.models });
+        this._removeBusyModuleItems({ models: this._moduleControlViewModel.busyModules.models });
     },
 
     _onCloseBtnClicked: function () {
@@ -97,22 +95,22 @@ var ModuleControlView = WindowView.extend({
         this._removeModuleItems(modules, moduleItems);
     },
 
-    _addCalculatingModuleItems: function (data) {
+    _addBusyModuleItems: function (data) {
         if (!data || !Array.isArray(data.models)) return;
 
         var modules = data.models;        
         var moduleControl = d3.select(this.viewportElement()).select('.module-control');
-        var moduleControlList = moduleControl.select('.module-control-calculating-list').node();
-        var moduleItems = this._calculatingModuleItems;
+        var moduleControlList = moduleControl.select('.module-control-busy-list').node();
+        var moduleItems = this._busyModuleItems;
         
         this._addModuleItems(modules, moduleControlList, moduleItems);
     },
 
-    _removeCalculatingModuleItems: function (data) {
+    _removeBusyModuleItems: function (data) {
         if (!data || !data.models) return;
 
         var modules = data.models;
-        var moduleItems = this._calculatingModuleItems;
+        var moduleItems = this._busyModuleItems;
         this._removeModuleItems(modules, moduleItems);
     },
 
@@ -142,16 +140,16 @@ var ModuleControlView = WindowView.extend({
     _updateModuleItemsListVisibility: function () {
         var moduleControl = d3.select(this.viewportElement()).select('.module-control');
         var readyModules = this._moduleControlViewModel.readyModules.models;
-        var calculatingModules = this._moduleControlViewModel.calculatingModules.models;
+        var busyModules = this._moduleControlViewModel.busyModules.models;
 
         moduleControl.select('.module-control-empty')
-            .classed('hidden', readyModules.length > 0 || calculatingModules.length > 0 );
+            .classed('hidden', readyModules.length > 0 || busyModules.length > 0 );
 
         moduleControl.select('.module-control-ready-list')
             .classed('hidden', readyModules.length === 0);
 
-        moduleControl.select('.module-control-calculating-list')
-            .classed('hidden', calculatingModules.length === 0);
+        moduleControl.select('.module-control-busy-list')
+            .classed('hidden', busyModules.length === 0);
     }
 
 });

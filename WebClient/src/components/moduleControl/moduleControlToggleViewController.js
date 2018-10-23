@@ -46,7 +46,9 @@ var ModuleControlToggleViewController = L.Evented.extend({
 
     _calculateIsLoadingFlagValue: function () {
         var loading = this._modules.models.reduce(function (loading, module) {
-            return loading || (module.status === ModuleStatus.CALCULATING);
+            return loading || 
+                   (module.status === ModuleStatus.CALCULATING) || 
+                   (module.status === ModuleStatus.BUSY);
         }, false);
         
         this._moduleControlToggleViewModel.loading = loading;

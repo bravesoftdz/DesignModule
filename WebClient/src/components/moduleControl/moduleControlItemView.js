@@ -21,6 +21,7 @@ var ModuleControlItemView = View.extend({
     onRender: function () {
         this._rootElement = L.DomUtil.create('div', 'module-control-item', this._parent);
         this._rootElement.innerHTML = moduleControlItemHtml;
+        this._rootElement.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 
         this._setupTooltip();
 

@@ -14,7 +14,8 @@ var ToastsController = L.Evented.extend({
         if (!opts.toastFunction) throw new Error('toastFunction is not provided');
 
         this._actions = {};
-        this._actions[ModuleStatus.CALCULATING] = this._showModuleIsCalculatingToast.bind(this);
+        this._actions[ModuleStatus.CALCULATING] = this._showModuleIsBusyToast.bind(this);
+        this._actions[ModuleStatus.BUSY] = this._showModuleIsBusyToast.bind(this);
         this._actions[ModuleStatus.READY] = this._showModuleIsReadyToast.bind(this);
 
         this._modules = opts.modules;
@@ -70,11 +71,11 @@ var ToastsController = L.Evented.extend({
     },
 
     _showModuleIsReadyToast: function (module) {
-        this._showToast('' + module.name + ' module is READY', 'succes', 3000);
+        this._showToast('' + module.name + ' module is READY', 'succes', 5000);
     },
 
-    _showModuleIsCalculatingToast: function (module) {
-        this._showToast('' + module.name + ' module is CALCULATING', 'succes', 3000);
+    _showModuleIsBusyToast: function (module) {
+        this._showToast('' + module.name + ' module is BUSY', 'succes', 5000);
     },
 
 });

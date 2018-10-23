@@ -11,15 +11,21 @@ import { ModuleStatus } from './moduleModel';
 
 var moduleStatusToStringMap = {};
 moduleStatusToStringMap[ModuleStatus.READY] = 'ready';
-moduleStatusToStringMap[ModuleStatus.CALCULATING] = 'calculating...';
+moduleStatusToStringMap[ModuleStatus.CALCULATING] = 'busy...';
+moduleStatusToStringMap[ModuleStatus.BUSY] = 'busy...';
 
 function moduleStatusToString(moduleStatus) {
     var statusText = moduleStatusToStringMap[moduleStatus] || '';
     return statusText;
 }
 
+function isModuleBusy(moduleStatus) {
+    return moduleStatus === ModuleStatus.CALCULATING ||
+           moduleStatus === ModuleStatus.BUSY;
+}
+
 function moduleStatusToLoadingFlag(moduleStatus) {
-    return moduleStatus === ModuleStatus.CALCULATING;
+    return isModuleBusy(moduleStatus);
 }
 
 function buildModuleControlItemModelData(moduleModel) {
@@ -112,10 +118,9 @@ var ModuleControlViewController = L.Evented.extend({
             return true;
         }
 
-        function filterCalculatingModels(moduleModel) {
+        function filterBusyModels(moduleModel) {
             if (!moduleModel) return false;
-            if (moduleModel.status !== ModuleStatus.CALCULATING) return false;
-            return true;
+            return isModuleBusy(moduleModel.status);
         }
 
         this._updateModulesCollection(
@@ -123,8 +128,8 @@ var ModuleControlViewController = L.Evented.extend({
             filterReadyModels
         );
         this._updateModulesCollection(
-            this._moduleControlViewModel.calculatingModules,
-            filterCalculatingModels
+            this._moduleControlViewModel.busyModules,
+            filterBusyModels
         );
     },
 
@@ -157,7 +162,7 @@ var ModuleControlViewController = L.Evented.extend({
         var moduleControlItemData;
         var moduleControlItem = 
             this._moduleControlViewModel.readyModules.getById(moduleModel.id) || 
-            this._moduleControlViewModel.calculatingModules.getById(moduleModel.id);        
+            this._moduleControlViewModel.busyModules.getById(moduleModel.id);        
         
         if (moduleControlItem) {
             moduleControlItemData = buildModuleControlItemModelData(moduleModel);

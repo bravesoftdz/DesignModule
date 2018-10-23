@@ -17,9 +17,9 @@ var ModuleControlViewModel = L.Evented.extend({
             get: function () { return readyModules; }
         });
 
-        var calculatingModules = options.calculatingModules || new ModelCollection();
-        Object.defineProperty(this, 'calculatingModules', {
-            get: function () { return calculatingModules; }
+        var busyModules = options.busyModules || new ModelCollection();
+        Object.defineProperty(this, 'busyModules', {
+            get: function () { return busyModules; }
         });
     }
 
