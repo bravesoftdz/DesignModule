@@ -8,7 +8,6 @@ import ModuleControlView from './moduleControlView';
 import ModuleControlViewModel from './moduleControlViewModel';
 import ModuleControlItemModel from './moduleControlItem/moduleControlItemModel';
 import { ModuleStatus } from '../moduleModel';
-import ModelCollection from '../../../core/modelCollection';
 
 var moduleStatusToStringMap = {};
 moduleStatusToStringMap[ModuleStatus.READY] = 'ready';
@@ -66,12 +65,14 @@ var ModuleControlViewController = L.Evented.extend({
     remove: function () {
         if (!this._moduleControlView) return;
 
+        this._modules.off('add', this._subscribeOnModuleModels, this);
+        this._modules.off('remove', this._unsubscribeFromModuleModels, this);
+        this._modules.off('change', this._updateModuleControlViewModel, this);
+
         this._unsubscribeFromModuleModels({ models: this._modules.models });
 
         this._moduleControlView.close();
         this._moduleControlView = null;
-
-        this._modules.off('change', this._updateModuleControlViewModel, this);
     },
 
     view: function () {
@@ -154,13 +155,12 @@ var ModuleControlViewController = L.Evented.extend({
         var moduleModel = data.module;
         if (!moduleModel) return;
 
-        var moduleControlItemData;
         var moduleControlItem = 
             this._moduleControlViewModel.readyModules.getById(moduleModel.id) || 
             this._moduleControlViewModel.busyModules.getById(moduleModel.id);        
         
         if (moduleControlItem) {
-            moduleControlItemData = buildModuleControlItemModelData(moduleModel);
+            var moduleControlItemData = buildModuleControlItemModelData(moduleModel);
             moduleControlItem.set(moduleControlItemData);
         }
     }
