@@ -6,8 +6,9 @@
 
 import ModuleControlView from './moduleControlView';
 import ModuleControlViewModel from './moduleControlViewModel';
-import ModuleControlItemModel from './moduleControlItemModel';
-import { ModuleStatus } from './moduleModel';
+import ModuleControlItemModel from './moduleControlItem/moduleControlItemModel';
+import { ModuleStatus } from '../moduleModel';
+import ModelCollection from '../../../core/modelCollection';
 
 var moduleStatusToStringMap = {};
 moduleStatusToStringMap[ModuleStatus.READY] = 'ready';
@@ -22,6 +23,10 @@ function moduleStatusToString(moduleStatus) {
 function isModuleBusy(moduleStatus) {
     return moduleStatus === ModuleStatus.CALCULATING ||
            moduleStatus === ModuleStatus.BUSY;
+}
+
+function isModuleReady(moduleStatus) {
+    return moduleStatus === ModuleStatus.READY;
 }
 
 function moduleStatusToLoadingFlag(moduleStatus) {
@@ -73,6 +78,10 @@ var ModuleControlViewController = L.Evented.extend({
         return this._moduleControlView;        
     },
 
+    model: function () {
+        return this._moduleControlViewModel;
+    },
+
     hideModuleControlView: function () {
         this._moduleControlView.hide();
     },
@@ -87,6 +96,36 @@ var ModuleControlViewController = L.Evented.extend({
         } else {
             this._moduleControlView.show();
         }
+    },
+
+    _updateModuleControlViewModel: function () {
+        var moduleModels = this._modules.models;
+
+        function createModuleControlItemModel(moduleModel) {
+            var moduleItemData = buildModuleControlItemModelData(moduleModel);
+            var moduleItem = new ModuleControlItemModel(moduleItemData);
+            return moduleItem;
+        }
+
+        function filterReadyModels(moduleModel) {
+            if (!moduleModel) return false;
+            return isModuleReady(moduleModel.status);
+        }
+
+        function filterBusyModels(moduleModel) {
+            if (!moduleModel) return false;
+            return isModuleBusy(moduleModel.status);
+        }
+
+        var readyModuleControlItemModels = moduleModels
+            .filter(filterReadyModels)
+            .map(createModuleControlItemModel);
+        this._moduleControlViewModel.readyModules.set(readyModuleControlItemModels);
+
+        var busyModuleControlItemModels = moduleModels
+            .filter(filterBusyModels)
+            .map(createModuleControlItemModel);
+        this._moduleControlViewModel.busyModules.set(busyModuleControlItemModels);
     },
 
     _subscribeOnModuleModels: function (data) {
@@ -109,50 +148,6 @@ var ModuleControlViewController = L.Evented.extend({
             module.off('change', this._updateModuleControlItemModel, this);
             module.off('status', this._updateModuleControlViewModel, this);
         }.bind(this));
-    },
-
-    _updateModuleControlViewModel: function () {
-        function filterReadyModels(moduleModel) {
-            if (!moduleModel) return false;
-            if (moduleModel.status !== ModuleStatus.READY) return false;
-            return true;
-        }
-
-        function filterBusyModels(moduleModel) {
-            if (!moduleModel) return false;
-            return isModuleBusy(moduleModel.status);
-        }
-
-        this._updateModulesCollection(
-            this._moduleControlViewModel.readyModules, 
-            filterReadyModels
-        );
-        this._updateModulesCollection(
-            this._moduleControlViewModel.busyModules,
-            filterBusyModels
-        );
-    },
-
-    _updateModulesCollection: function (readyModulesCollection, filter) {
-        var newModuleItemModels = [];
-        var moduleModels = this._modules.models;
-
-        moduleModels
-            .filter(filter)
-            .forEach(function (moduleModel) {
-                var moduleItemData = buildModuleControlItemModelData(moduleModel);
-                var moduleItem = readyModulesCollection.getById(moduleModel.id);
-                
-                if (moduleItem) {
-                    moduleItem.set(moduleItemData);                
-                } else {
-                    moduleItem = new ModuleControlItemModel(moduleItemData);
-                }               
-
-                newModuleItemModels.push(moduleItem);
-            });
-
-        readyModulesCollection.set(newModuleItemModels);
     },
 
     _updateModuleControlItemModel: function (data) {

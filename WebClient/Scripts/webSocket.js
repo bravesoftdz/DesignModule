@@ -173,6 +173,12 @@ var wsLookup = {
         }
         if (typeof payload.modelControlEnabled !== "undefined") {
             moduleService.enabled = !!payload.modelControlEnabled;
+            
+            InfoTextControl['leaflet-control-module'] = { 
+                description: 'View module control info', 
+                active: moduleService.enabled, 
+                iconPosition: 'left' 
+            };
         }
         if (typeof payload.filesControlEnabled !== "undefined") {
             if (payload.filesControlEnabled) {

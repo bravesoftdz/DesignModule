@@ -1,12 +1,12 @@
 /**
- * ToastsController. Shows toasts depending on modules state.
+ * ModuleToastsController. Shows toasts depending on modules state.
  */
 
 /* globals L */
 
 import { ModuleStatus } from './moduleModel';
 
-var ToastsController = L.Evented.extend({
+var ModuleToastsController = L.Evented.extend({
 
     initialize: function (opts) {
         if (!opts) throw new Error('No arguments are provided');
@@ -80,4 +80,4 @@ var ToastsController = L.Evented.extend({
 
 });
 
-export default ToastsController;
+export default ModuleToastsController;

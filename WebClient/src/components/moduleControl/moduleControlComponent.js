@@ -4,10 +4,10 @@
 
 /* globals L */
 
-import ToastsController from './toastsController';
+import ModuleToastsController from './moduleToastsController';
 import ModuleService from './moduleService';
-import ModuleControlViewController from './moduleControlViewController';
-import ModuleControlToggleViewController from './moduleControlToggleViewController';
+import ModuleControlViewController from './moduleControlWindow/moduleControlViewController';
+import ModuleControlToggleViewController from './moduleControlToggle/moduleControlToggleViewController';
 
 var ModuleControlComponent = L.Evented.extend({
 
@@ -42,7 +42,7 @@ var ModuleControlComponent = L.Evented.extend({
     },
 
     _startComponent: function () {
-        this._toastsController = new ToastsController({
+        this._toastsController = new ModuleToastsController({
             modules: this._moduleService.modules,
             toastFunction: this._toastFunction
         });

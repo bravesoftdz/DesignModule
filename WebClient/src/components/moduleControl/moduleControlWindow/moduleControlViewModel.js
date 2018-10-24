@@ -5,7 +5,7 @@
 
 /* globals L */
 
-import ModelCollection from '../../core/modelCollection';
+import ModelCollection from '../../../core/modelCollection';
 
 var ModuleControlViewModel = L.Evented.extend({
 

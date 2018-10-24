@@ -6,7 +6,7 @@
 
 import './moduleControlToggle.css';
 import moduleControlToggleHtml from './moduleControlToggle.html';
-import View from '../../core/view';
+import View from '../../../core/view';
 
 /* globals L, d3 */
 

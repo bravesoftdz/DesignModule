@@ -6,8 +6,8 @@
 
 import './moduleControlItem.css';
 import moduleControlItemHtml from './moduleControlItem.html';
-import View from '../../core/view';
-import TooltipView from '../../core/widgets/tooltip/tooltipView';
+import View from '../../../../core/view';
+import TooltipView from '../../../../core/widgets/tooltip/tooltipView';
 
 var ModuleControlItemView = View.extend({
 

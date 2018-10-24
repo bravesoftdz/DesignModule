@@ -6,7 +6,7 @@
 
 import ModuleControlToggleView from './moduleControlToggleView';
 import ModuleControlToggleViewModel from './moduleControlToggleViewModel';
-import { ModuleStatus } from './moduleModel';
+import { ModuleStatus } from '../moduleModel';
 
 var ModuleControlToggleViewController = L.Evented.extend({
 
@@ -42,6 +42,10 @@ var ModuleControlToggleViewController = L.Evented.extend({
 
     view: function () {
         return this._moduleControlToggleView;
+    },
+
+    model: function () {
+        return this._moduleControlToggleViewModel;
     },
 
     _calculateIsLoadingFlagValue: function () {

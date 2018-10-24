@@ -16,10 +16,10 @@ export var ModuleStatus = {
     REMOVED:     'removed'
 };
 
-function validateState(state) {
+export function validateStatus(status) {
     for (var s in ModuleStatus) {        
         if (!ModuleStatus.hasOwnProperty(s)) continue;
-        if (state === ModuleStatus[s]) return true;
+        if (status === ModuleStatus[s]) return true;
     }
     
     return false;
@@ -51,7 +51,7 @@ var ModuleModel = L.Evented.extend({
         }
 
         function setStatus(newStatus) {
-            if (!validateState(newStatus)) {
+            if (!validateStatus(newStatus)) {
                 throw new Error('Invalid module status ' + newStatus);
             }
             if (status === newStatus) return false;

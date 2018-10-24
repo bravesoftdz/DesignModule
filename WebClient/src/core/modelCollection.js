@@ -42,8 +42,8 @@ var ModelCollection = L.Evented.extend({
             var addedModels = difference(newModels, models);
             models = toArray(newModels);
             
-            this.fire('add', { models: addedModels });
             this.fire('remove', { models: removedModels });
+            this.fire('add', { models: addedModels });            
             this.fire('change', { models: models });
         };
 
@@ -66,6 +66,10 @@ var ModelCollection = L.Evented.extend({
             this.fire('remove', { models: removedModels });
             this.fire('change', { models: models });
         };
+
+        Object.defineProperty(this, 'length', {
+            get: function () { return models.length; }
+        });
     },
 
     contains: function (model) {
