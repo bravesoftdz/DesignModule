@@ -8,6 +8,7 @@ import ModuleControlView from './moduleControlView';
 import ModuleControlViewModel from './moduleControlViewModel';
 import ModuleControlItemModel from './moduleControlItem/moduleControlItemModel';
 import { ModuleStatus } from '../moduleModel';
+import ModelCollection from '../../../core/modelCollection';
 
 var moduleStatusToStringMap = {};
 moduleStatusToStringMap[ModuleStatus.READY] = 'ready';
@@ -48,6 +49,8 @@ var ModuleControlViewController = L.Evented.extend({
         if (!opts.modules) throw new Error('modules argument is not provided');
 
         this._modules = opts.modules;
+        this._moduleControlItemModelsCache = new ModelCollection();
+        this._updateModuleControlItemModelsCache();
 
         this._moduleControlViewModel = new ModuleControlViewModel();
         this._moduleControlView = new ModuleControlView({
@@ -99,13 +102,34 @@ var ModuleControlViewController = L.Evented.extend({
         }
     },
 
-    _updateModuleControlViewModel: function () {
+    _updateModuleControlItemModelsCache: function () {
+        var moduleControlItemModelsCache = this._moduleControlItemModelsCache;
         var moduleModels = this._modules.models;
 
-        function createModuleControlItemModel(moduleModel) {
-            var moduleItemData = buildModuleControlItemModelData(moduleModel);
-            var moduleItem = new ModuleControlItemModel(moduleItemData);
-            return moduleItem;
+        function toModuleControlItemModel(moduleModel) {
+            var moduleControlItemModelData = buildModuleControlItemModelData(moduleModel);
+            var moduleControlItemModel = moduleControlItemModelsCache.getById(moduleModel.id);
+            
+            if (moduleControlItemModel) {
+                moduleControlItemModel.set(moduleControlItemModelData);
+            } else {
+                moduleControlItemModel = new ModuleControlItemModel(moduleControlItemModelData);
+            }
+
+            return moduleControlItemModel;
+        }
+        
+        var moduleControlItemModels = moduleModels.map(toModuleControlItemModel);
+        moduleControlItemModelsCache.set(moduleControlItemModels);
+    },
+
+    _updateModuleControlViewModel: function () {
+        this._updateModuleControlItemModelsCache();
+
+        var moduleControlItemModelsCache = this._moduleControlItemModelsCache;
+
+        function getModuleControlItemModel(moduleModel) {
+            return moduleControlItemModelsCache.getById(moduleModel.id);
         }
 
         function filterReadyModels(moduleModel) {
@@ -118,14 +142,23 @@ var ModuleControlViewController = L.Evented.extend({
             return isModuleBusy(moduleModel.status);
         }
 
+        function filterNotEmpty(item) {
+            return !!item;
+        }
+
+        var moduleModels = this._modules.models;
+
         var readyModuleControlItemModels = moduleModels
             .filter(filterReadyModels)
-            .map(createModuleControlItemModel);
-        this._moduleControlViewModel.readyModules.set(readyModuleControlItemModels);
+            .map(getModuleControlItemModel)
+            .filter(filterNotEmpty);        
 
         var busyModuleControlItemModels = moduleModels
             .filter(filterBusyModels)
-            .map(createModuleControlItemModel);
+            .map(getModuleControlItemModel)
+            .filter(filterNotEmpty);
+
+        this._moduleControlViewModel.readyModules.set(readyModuleControlItemModels);
         this._moduleControlViewModel.busyModules.set(busyModuleControlItemModels);
     },
 

@@ -141,4 +141,22 @@ describe('ModuleControlViewController', () => {
         });
     });
 
+    it('existing module item instance presists on status changes', () => {
+        let actualModuleItemModel;
+
+        moduleModel.status = ModuleStatus.BUSY;
+        const expectedModuleItemModel = moduleControlViewController.model().busyModules.models[0];
+        
+        moduleModel.status = ModuleStatus.IDLE;        
+        moduleModel.status = ModuleStatus.CALCULATING;
+
+        actualModuleItemModel = moduleControlViewController.model().busyModules.models[0];
+        expect(Object.is(actualModuleItemModel, expectedModuleItemModel)).toBe(true);
+        
+        moduleModel.status = ModuleStatus.READY;
+        
+        actualModuleItemModel = moduleControlViewController.model().readyModules.models[0];
+        expect(Object.is(actualModuleItemModel, expectedModuleItemModel)).toBe(true);
+    });
+
 });
