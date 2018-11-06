@@ -35,6 +35,7 @@ describe('ModuleControlWindowViewController', () => {
         });
 
         moduleControlWindowViewController = new ModuleControlWindowViewController({ modules });
+        moduleControlWindowViewController.showModuleControlWindowView();
 
         moduleModel = new ModuleModel({
             id: 'Traffic',

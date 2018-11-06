@@ -56,23 +56,15 @@ var ModuleControlWindowViewController = L.Evented.extend({
         this._moduleControlWindowView = new ModuleControlWindowView({
             moduleControlWindowViewModel: this._moduleControlWindowViewModel
         });
-
-        this._subscribeOnModuleModels({ models: this._modules.models });
-        this._updateModuleControlWindowViewModel();
-
-        this._modules.on('add', this._subscribeOnModuleModels, this);
-        this._modules.on('remove', this._unsubscribeFromModuleModels, this);
-        this._modules.on('change', this._updateModuleControlWindowViewModel, this);
+        
+        this._moduleControlWindowView.on('show', this._subscribe, this);
+        this._moduleControlWindowView.on('hide', this._unsubscribe, this);
     },
 
     remove: function () {
         if (!this._moduleControlWindowView) return;
 
-        this._modules.off('add', this._subscribeOnModuleModels, this);
-        this._modules.off('remove', this._unsubscribeFromModuleModels, this);
-        this._modules.off('change', this._updateModuleControlWindowViewModel, this);
-
-        this._unsubscribeFromModuleModels({ models: this._modules.models });
+        this._unsubscribe();
 
         this._moduleControlWindowView.close();
         this._moduleControlWindowView = null;
@@ -102,6 +94,23 @@ var ModuleControlWindowViewController = L.Evented.extend({
         }
     },
 
+    _subscribe: function () {
+        this._subscribeOnModuleModels({ models: this._modules.models });
+        this._updateModuleControlWindowViewModel();
+
+        this._modules.on('add', this._subscribeOnModuleModels, this);
+        this._modules.on('remove', this._unsubscribeFromModuleModels, this);
+        this._modules.on('change', this._updateModuleControlWindowViewModel, this);
+    },
+
+    _unsubscribe: function () {
+        this._modules.off('add', this._subscribeOnModuleModels, this);
+        this._modules.off('remove', this._unsubscribeFromModuleModels, this);
+        this._modules.off('change', this._updateModuleControlWindowViewModel, this);
+
+        this._unsubscribeFromModuleModels({ models: this._modules.models });
+    },
+
     _updateModuleControlItemModelsCache: function () {
         var moduleControlItemModelsCache = this._moduleControlItemModelsCache;
         var moduleModels = this._modules.models;
@@ -124,6 +133,7 @@ var ModuleControlWindowViewController = L.Evented.extend({
     },
 
     _updateModuleControlWindowViewModel: function () {
+        console.log('_updateModuleControlWindowViewModel');
         this._updateModuleControlItemModelsCache();
 
         var moduleControlItemModelsCache = this._moduleControlItemModelsCache;
