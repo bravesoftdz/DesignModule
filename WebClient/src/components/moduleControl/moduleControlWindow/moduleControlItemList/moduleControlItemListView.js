@@ -33,7 +33,7 @@ var ModuleControlItemListView = View.extend({
         this._modules.off('add', this._addModuleItems, this);
         this._modules.off('remove', this._removeModuleItems, this);
 
-        this._removeReadyModuleItems({ models: this._moduleControlViewModel.readyModules.models });
+        this._removeReadyModuleItems({ models: this._moduleControlWindowViewModel.readyModules.models });
     },
 
     _addModuleItems: function (data) {

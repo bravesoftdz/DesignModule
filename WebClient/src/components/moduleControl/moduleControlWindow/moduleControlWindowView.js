@@ -1,19 +1,19 @@
 /**
- * ModuleControlView is awindow to display a list of server side modules.
+ * ModuleControlWindowView is awindow to display a list of server side modules.
  */
 
 /* globals L, d3 */
 
-import './moduleControl.css';
+import './moduleControlWindow.css';
 import WindowView from '../../../core/window/windowView';
-import moduleControlHtml from './moduleControl.html';
+import moduleControlHtml from './moduleControlWindow.html';
 import ModuleControlItemListView from './moduleControlItemList/ModuleControlItemListView';
 
-var ModuleControlView = WindowView.extend({
+var ModuleControlWindowView = WindowView.extend({
     
     onInitialize: function (opts) {
         if (!opts) throw new Error('No arguments are provided to the View');
-        if (!opts.moduleControlViewModel) throw new Error('moduleControlViewModel is not provided');
+        if (!opts.moduleControlWindowViewModel) throw new Error('moduleControlWindowViewModel is not provided');
 
         WindowView.prototype.onInitialize.call(
             this, 
@@ -27,7 +27,7 @@ var ModuleControlView = WindowView.extend({
             }, opts)
         );
 
-        this._moduleControlViewModel = opts.moduleControlViewModel;
+        this._moduleControlWindowViewModel = opts.moduleControlWindowViewModel;
     },
 
     onRenderWindow: function (viewport) {
@@ -39,7 +39,7 @@ var ModuleControlView = WindowView.extend({
         moduleControlReadyListNode.addEventListener('touchstart',  function (e) { e.stopPropagation(); });
 
         this._moduleControlReadyItemsList = new ModuleControlItemListView({
-            modules: this._moduleControlViewModel.readyModules,
+            modules: this._moduleControlWindowViewModel.readyModules,
             parent: moduleControlReadyListNode
         });
 
@@ -49,19 +49,19 @@ var ModuleControlView = WindowView.extend({
         moduleControlBusyListNode.addEventListener('touchstart',  function (e) { e.stopPropagation(); });
 
         this._moduleControlBusyItemsList = new ModuleControlItemListView({
-            modules: this._moduleControlViewModel.busyModules,
+            modules: this._moduleControlWindowViewModel.busyModules,
             parent: moduleControlBusyListNode
         });
 
         this._updateModuleItemsListVisibility();
         
-        this._moduleControlViewModel.readyModules.on('change', this._updateModuleItemsListVisibility, this);
-        this._moduleControlViewModel.busyModules.on('change', this._updateModuleItemsListVisibility, this);
+        this._moduleControlWindowViewModel.readyModules.on('change', this._updateModuleItemsListVisibility, this);
+        this._moduleControlWindowViewModel.busyModules.on('change', this._updateModuleItemsListVisibility, this);
     },
 
     onRemoveWindow: function () {
-        this._moduleControlViewModel.readyModules.off('change', this._updateModuleItemsListVisibility, this);
-        this._moduleControlViewModel.busyModules.off('change', this._updateModuleItemsListVisibility, this);
+        this._moduleControlWindowViewModel.readyModules.off('change', this._updateModuleItemsListVisibility, this);
+        this._moduleControlWindowViewModel.busyModules.off('change', this._updateModuleItemsListVisibility, this);
     },
 
     _onCloseBtnClicked: function () {
@@ -70,8 +70,8 @@ var ModuleControlView = WindowView.extend({
 
     _updateModuleItemsListVisibility: function () {
         var moduleControl = d3.select(this.viewportElement()).select('.module-control');
-        var readyModules = this._moduleControlViewModel.readyModules.models;
-        var busyModules = this._moduleControlViewModel.busyModules.models;
+        var readyModules = this._moduleControlWindowViewModel.readyModules.models;
+        var busyModules = this._moduleControlWindowViewModel.busyModules.models;
 
         moduleControl.select('.module-control-empty')
             .classed('hidden', readyModules.length > 0 || busyModules.length > 0 );
@@ -85,4 +85,4 @@ var ModuleControlView = WindowView.extend({
 
 });
 
-export default ModuleControlView;
+export default ModuleControlWindowView;

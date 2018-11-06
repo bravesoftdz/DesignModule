@@ -1,13 +1,13 @@
 /**
- * ModuleControlViewModel. This model is used only to present data 
- * to ModuleControlView for visualization and not meant to be a domain model.
+ * ModuleControlWindowViewModel. This model is used only to present data 
+ * to ModuleControlWindowView for visualization and not meant to be a domain model.
  */
 
 /* globals L */
 
 import ModelCollection from '../../../core/modelCollection';
 
-var ModuleControlViewModel = L.Evented.extend({
+var ModuleControlWindowViewModel = L.Evented.extend({
 
     initialize: function (opts) {
         var options = opts || {};
@@ -25,4 +25,4 @@ var ModuleControlViewModel = L.Evented.extend({
 
 });
 
-export default ModuleControlViewModel;
+export default ModuleControlWindowViewModel;

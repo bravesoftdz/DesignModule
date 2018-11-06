@@ -6,7 +6,7 @@
 
 import ModuleToastsController from './moduleToastsController';
 import ModuleService from './moduleService';
-import ModuleControlViewController from './moduleControlWindow/moduleControlViewController';
+import ModuleControlWindowViewController from './moduleControlWindow/moduleControlWindowViewController';
 import ModuleControlToggleViewController from './moduleControlToggle/moduleControlToggleViewController';
 
 var ModuleControlComponent = L.Evented.extend({
@@ -50,16 +50,16 @@ var ModuleControlComponent = L.Evented.extend({
         this._moduleControlToggleViewController = new ModuleControlToggleViewController({
             modules: this._moduleService.modules
         });
-        this._moduleControlToggleViewController.on('moduleControlToggle', this._toggleModuleControlView, this);
+        this._moduleControlToggleViewController.on('moduleControlToggle', this._toggleModuleControlWindowView, this);
 
-        this._moduleControlViewController = new ModuleControlViewController({
+        this._moduleControlWindowViewController = new ModuleControlWindowViewController({
             modules: this._moduleService.modules
         });
         
-        this._windowManager.addWindow(this._moduleControlViewController.view(), {
+        this._windowManager.addWindow(this._moduleControlWindowViewController.view(), {
             position: 'center'
         });
-        this._moduleControlViewController.hideModuleControlView();
+        this._moduleControlWindowViewController.hideModuleControlWindowView();
 
         this._map.addControl(this._moduleControlToggleViewController.view());
     },
@@ -71,8 +71,8 @@ var ModuleControlComponent = L.Evented.extend({
         this._moduleControlToggleViewController.remove();
         this._moduleControlToggleViewController = null;
 
-        this._moduleControlViewController.remove();
-        this._moduleControlViewController = null;
+        this._moduleControlWindowViewController.remove();
+        this._moduleControlWindowViewController = null;
     },
 
     _onServiceEnabledChange: function (data) {
@@ -84,8 +84,8 @@ var ModuleControlComponent = L.Evented.extend({
         }
     },
 
-    _toggleModuleControlView: function () {
-        this._moduleControlViewController.toggleModuleControlView();
+    _toggleModuleControlWindowView: function () {
+        this._moduleControlWindowViewController.toggleModuleControlWindowView();
     }
 
 });

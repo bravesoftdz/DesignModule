@@ -1,11 +1,11 @@
 /**
- * ModuleControlViewController. This is a controller for ModuleControlView.
+ * ModuleControlWindowViewController. This is a controller for ModuleControlWindowView.
  */
 
 /* globals L */ 
 
-import ModuleControlView from './moduleControlView';
-import ModuleControlViewModel from './moduleControlViewModel';
+import ModuleControlWindowView from './moduleControlWindowView';
+import ModuleControlWindowViewModel from './moduleControlWindowViewModel';
 import ModuleControlItemModel from './moduleControlItem/moduleControlItemModel';
 import { ModuleStatus } from '../moduleModel';
 import ModelCollection from '../../../core/modelCollection';
@@ -42,7 +42,7 @@ function buildModuleControlItemModelData(moduleModel) {
     };
 }
 
-var ModuleControlViewController = L.Evented.extend({
+var ModuleControlWindowViewController = L.Evented.extend({
 
     initialize: function (opts) {
         if (!opts) throw new Error('No arguments are provided to the View');
@@ -52,53 +52,53 @@ var ModuleControlViewController = L.Evented.extend({
         this._moduleControlItemModelsCache = new ModelCollection();
         this._updateModuleControlItemModelsCache();
 
-        this._moduleControlViewModel = new ModuleControlViewModel();
-        this._moduleControlView = new ModuleControlView({
-            moduleControlViewModel: this._moduleControlViewModel
+        this._moduleControlWindowViewModel = new ModuleControlWindowViewModel();
+        this._moduleControlWindowView = new ModuleControlWindowView({
+            moduleControlWindowViewModel: this._moduleControlWindowViewModel
         });
 
         this._subscribeOnModuleModels({ models: this._modules.models });
-        this._updateModuleControlViewModel();
+        this._updateModuleControlWindowViewModel();
 
         this._modules.on('add', this._subscribeOnModuleModels, this);
         this._modules.on('remove', this._unsubscribeFromModuleModels, this);
-        this._modules.on('change', this._updateModuleControlViewModel, this);
+        this._modules.on('change', this._updateModuleControlWindowViewModel, this);
     },
 
     remove: function () {
-        if (!this._moduleControlView) return;
+        if (!this._moduleControlWindowView) return;
 
         this._modules.off('add', this._subscribeOnModuleModels, this);
         this._modules.off('remove', this._unsubscribeFromModuleModels, this);
-        this._modules.off('change', this._updateModuleControlViewModel, this);
+        this._modules.off('change', this._updateModuleControlWindowViewModel, this);
 
         this._unsubscribeFromModuleModels({ models: this._modules.models });
 
-        this._moduleControlView.close();
-        this._moduleControlView = null;
+        this._moduleControlWindowView.close();
+        this._moduleControlWindowView = null;
     },
 
     view: function () {
-        return this._moduleControlView;        
+        return this._moduleControlWindowView;        
     },
 
     model: function () {
-        return this._moduleControlViewModel;
+        return this._moduleControlWindowViewModel;
     },
 
-    hideModuleControlView: function () {
-        this._moduleControlView.hide();
+    hideModuleControlWindowView: function () {
+        this._moduleControlWindowView.hide();
     },
 
-    showModuleControlView: function () {
-        this._moduleControlView.show();
+    showModuleControlWindowView: function () {
+        this._moduleControlWindowView.show();
     },
 
-    toggleModuleControlView: function () {
-        if (this._moduleControlView.isVisible()) {
-            this._moduleControlView.hide();
+    toggleModuleControlWindowView: function () {
+        if (this._moduleControlWindowView.isVisible()) {
+            this._moduleControlWindowView.hide();
         } else {
-            this._moduleControlView.show();
+            this._moduleControlWindowView.show();
         }
     },
 
@@ -123,7 +123,7 @@ var ModuleControlViewController = L.Evented.extend({
         moduleControlItemModelsCache.set(moduleControlItemModels);
     },
 
-    _updateModuleControlViewModel: function () {
+    _updateModuleControlWindowViewModel: function () {
         this._updateModuleControlItemModelsCache();
 
         var moduleControlItemModelsCache = this._moduleControlItemModelsCache;
@@ -158,8 +158,8 @@ var ModuleControlViewController = L.Evented.extend({
             .map(getModuleControlItemModel)
             .filter(filterNotEmpty);
 
-        this._moduleControlViewModel.readyModules.set(readyModuleControlItemModels);
-        this._moduleControlViewModel.busyModules.set(busyModuleControlItemModels);
+        this._moduleControlWindowViewModel.readyModules.set(readyModuleControlItemModels);
+        this._moduleControlWindowViewModel.busyModules.set(busyModuleControlItemModels);
     },
 
     _subscribeOnModuleModels: function (data) {
@@ -169,7 +169,7 @@ var ModuleControlViewController = L.Evented.extend({
         var modules = data.models;
         modules.forEach(function (module) {
             module.on('change', this._updateModuleControlItemModel, this);
-            module.on('status', this._updateModuleControlViewModel, this);
+            module.on('status', this._updateModuleControlWindowViewModel, this);
         }.bind(this));
     },
 
@@ -180,7 +180,7 @@ var ModuleControlViewController = L.Evented.extend({
         var modules = data.models;
         modules.forEach(function (module) {
             module.off('change', this._updateModuleControlItemModel, this);
-            module.off('status', this._updateModuleControlViewModel, this);
+            module.off('status', this._updateModuleControlWindowViewModel, this);
         }.bind(this));
     },
 
@@ -189,8 +189,8 @@ var ModuleControlViewController = L.Evented.extend({
         if (!moduleModel) return;
 
         var moduleControlItem = 
-            this._moduleControlViewModel.readyModules.getById(moduleModel.id) || 
-            this._moduleControlViewModel.busyModules.getById(moduleModel.id);        
+            this._moduleControlWindowViewModel.readyModules.getById(moduleModel.id) || 
+            this._moduleControlWindowViewModel.busyModules.getById(moduleModel.id);        
         
         if (moduleControlItem) {
             var moduleControlItemData = buildModuleControlItemModelData(moduleModel);
@@ -200,4 +200,4 @@ var ModuleControlViewController = L.Evented.extend({
     
 }); 
 
-export default ModuleControlViewController;
+export default ModuleControlWindowViewController;

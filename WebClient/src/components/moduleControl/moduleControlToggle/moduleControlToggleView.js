@@ -1,5 +1,5 @@
 /**
- * ModuleControlToggleView. Represents a toggle button that shows or hides the ModuleControlView.
+ * ModuleControlToggleView. Represents a toggle button that shows or hides the ModuleControlWindowView.
  */
 
 /* globals L */ 

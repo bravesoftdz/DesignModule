@@ -1,13 +1,13 @@
 'use strict';
 
-import ModuleControlViewController from 
-    'components/moduleControl/moduleControlWindow/moduleControlViewController';
+import ModuleControlWindowViewController from 
+    'components/moduleControl/moduleControlWindow/moduleControlWindowViewController';
 import ModelCollection from 'core/modelCollection';
 import ModuleModel, { ModuleStatus } from 'components/moduleControl/moduleModel';
 
-describe('ModuleControlViewController', () => {
+describe('ModuleControlWindowViewController', () => {
     let modules;
-    let moduleControlViewController;
+    let moduleControlWindowViewController;
     let moduleModel;
     
     beforeEach(() => {
@@ -34,7 +34,7 @@ describe('ModuleControlViewController', () => {
             ]
         });
 
-        moduleControlViewController = new ModuleControlViewController({ modules });
+        moduleControlWindowViewController = new ModuleControlWindowViewController({ modules });
 
         moduleModel = new ModuleModel({
             id: 'Traffic',
@@ -48,40 +48,40 @@ describe('ModuleControlViewController', () => {
 
     it('ready list does not contain modules with unexpected status', ()=> {
         moduleModel.status = ModuleStatus.IDLE;
-        expect(moduleControlViewController.model().readyModules.length).toBe(0);
+        expect(moduleControlWindowViewController.model().readyModules.length).toBe(0);
 
         moduleModel.status = ModuleStatus.LOCKED;
-        expect(moduleControlViewController.model().readyModules.length).toBe(0);
+        expect(moduleControlWindowViewController.model().readyModules.length).toBe(0);
 
         moduleModel.status = ModuleStatus.CALCULATING;
-        expect(moduleControlViewController.model().readyModules.length).toBe(0);
+        expect(moduleControlWindowViewController.model().readyModules.length).toBe(0);
 
         moduleModel.status = ModuleStatus.BUSY;
-        expect(moduleControlViewController.model().readyModules.length).toBe(0);
+        expect(moduleControlWindowViewController.model().readyModules.length).toBe(0);
 
         moduleModel.status = ModuleStatus.REMOVED;
-        expect(moduleControlViewController.model().readyModules.length).toBe(0);
+        expect(moduleControlWindowViewController.model().readyModules.length).toBe(0);
     });
 
     it('busy list does not contain modules with unexpected status', ()=> {
         moduleModel.status = ModuleStatus.IDLE;
-        expect(moduleControlViewController.model().busyModules.length).toBe(0);
+        expect(moduleControlWindowViewController.model().busyModules.length).toBe(0);
 
         moduleModel.status = ModuleStatus.LOCKED;
-        expect(moduleControlViewController.model().busyModules.length).toBe(0);
+        expect(moduleControlWindowViewController.model().busyModules.length).toBe(0);
 
         moduleModel.status = ModuleStatus.READY;
-        expect(moduleControlViewController.model().busyModules.length).toBe(0);
+        expect(moduleControlWindowViewController.model().busyModules.length).toBe(0);
 
         moduleModel.status = ModuleStatus.REMOVED;
-        expect(moduleControlViewController.model().busyModules.length).toBe(0);
+        expect(moduleControlWindowViewController.model().busyModules.length).toBe(0);
     });
     
     it('ready list contains modules with "ready" status', () => {
         moduleModel.status = ModuleStatus.READY;
 
-        expect(moduleControlViewController.model().readyModules.length).toBe(1);
-        expect(moduleControlViewController.model().readyModules.models[0]).toMatchObject({
+        expect(moduleControlWindowViewController.model().readyModules.length).toBe(1);
+        expect(moduleControlWindowViewController.model().readyModules.models[0]).toMatchObject({
             id: moduleModel.id,
             name: moduleModel.name,
             status: 'ready',
@@ -92,8 +92,8 @@ describe('ModuleControlViewController', () => {
     it('busy list contains modules with "calculating" status', () => {
         moduleModel.status = ModuleStatus.CALCULATING;
 
-        expect(moduleControlViewController.model().busyModules.length).toBe(1);
-        expect(moduleControlViewController.model().busyModules.models[0]).toMatchObject({
+        expect(moduleControlWindowViewController.model().busyModules.length).toBe(1);
+        expect(moduleControlWindowViewController.model().busyModules.models[0]).toMatchObject({
             id: moduleModel.id,
             name: moduleModel.name,
             status: 'busy...',
@@ -104,8 +104,8 @@ describe('ModuleControlViewController', () => {
     it('busy list contains modules with "busy" status', () => {
         moduleModel.status = ModuleStatus.BUSY;
 
-        expect(moduleControlViewController.model().busyModules.length).toBe(1);
-        expect(moduleControlViewController.model().busyModules.models[0]).toMatchObject({
+        expect(moduleControlWindowViewController.model().busyModules.length).toBe(1);
+        expect(moduleControlWindowViewController.model().busyModules.models[0]).toMatchObject({
             id: moduleModel.id,
             name: moduleModel.name,
             status: 'busy...',
@@ -117,9 +117,9 @@ describe('ModuleControlViewController', () => {
         moduleModel.status = ModuleStatus.READY;
         moduleModel.status = ModuleStatus.BUSY;
         
-        expect(moduleControlViewController.model().readyModules.length).toBe(0);
-        expect(moduleControlViewController.model().busyModules.length).toBe(1);
-        expect(moduleControlViewController.model().busyModules.models[0]).toMatchObject({
+        expect(moduleControlWindowViewController.model().readyModules.length).toBe(0);
+        expect(moduleControlWindowViewController.model().busyModules.length).toBe(1);
+        expect(moduleControlWindowViewController.model().busyModules.models[0]).toMatchObject({
             id: moduleModel.id,
             name: moduleModel.name,
             status: 'busy...',
@@ -131,9 +131,9 @@ describe('ModuleControlViewController', () => {
         moduleModel.status = ModuleStatus.BUSY;
         moduleModel.status = ModuleStatus.READY;
         
-        expect(moduleControlViewController.model().busyModules.length).toBe(0);
-        expect(moduleControlViewController.model().readyModules.length).toBe(1);        
-        expect(moduleControlViewController.model().readyModules.models[0]).toMatchObject({
+        expect(moduleControlWindowViewController.model().busyModules.length).toBe(0);
+        expect(moduleControlWindowViewController.model().readyModules.length).toBe(1);        
+        expect(moduleControlWindowViewController.model().readyModules.models[0]).toMatchObject({
             id: moduleModel.id,
             name: moduleModel.name,
             status: 'ready',
@@ -145,17 +145,17 @@ describe('ModuleControlViewController', () => {
         let actualModuleItemModel;
 
         moduleModel.status = ModuleStatus.BUSY;
-        const expectedModuleItemModel = moduleControlViewController.model().busyModules.models[0];
+        const expectedModuleItemModel = moduleControlWindowViewController.model().busyModules.models[0];
         
         moduleModel.status = ModuleStatus.IDLE;        
         moduleModel.status = ModuleStatus.CALCULATING;
 
-        actualModuleItemModel = moduleControlViewController.model().busyModules.models[0];
+        actualModuleItemModel = moduleControlWindowViewController.model().busyModules.models[0];
         expect(Object.is(actualModuleItemModel, expectedModuleItemModel)).toBe(true);
         
         moduleModel.status = ModuleStatus.READY;
         
-        actualModuleItemModel = moduleControlViewController.model().readyModules.models[0];
+        actualModuleItemModel = moduleControlWindowViewController.model().readyModules.models[0];
         expect(Object.is(actualModuleItemModel, expectedModuleItemModel)).toBe(true);
     });
 
