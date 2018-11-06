@@ -133,7 +133,6 @@ var ModuleControlWindowViewController = L.Evented.extend({
     },
 
     _updateModuleControlWindowViewModel: function () {
-        console.log('_updateModuleControlWindowViewModel');
         this._updateModuleControlItemModelsCache();
 
         var moduleControlItemModelsCache = this._moduleControlItemModelsCache;
